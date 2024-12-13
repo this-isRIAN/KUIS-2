@@ -1,131 +1,139 @@
 /* eslint-disable no-unused-vars */
-// src/components/Fakultas/Create.jsx
 import React, { useState } from "react"; // Import React dan useState untuk menggunakan state hooks
-import axios from "axios"; // Import axios untuk melakukan HTTP request
+import axios from "axios"; // Import axios untuk melakukan HTTP requests
 
-export default function CreateFakultas() {
-    // Inisialisasi state untuk menyimpan nama fakultas
+export default function CreateProdi() {
+    // Inisialisasi state untuk menyimpan input form
     const [namaProdi, setNamaProdi] = useState("");
-    const [kaprodi, setKaprodi] = useState("");
+    const [namaKaprodi, setNamaKaprodi] = useState("");
     const [singkatan, setSingkatan] = useState("");
-    const [Fakultas, setFakultas] = useState("");
+    const [namaFakultas, setNamaFakultas] = useState("");
 
-    // Inisialisasi state untuk menyimpan pesan error
+    // State untuk menyimpan pesan error dan sukses
     const [error, setError] = useState("");
-    // Inisialisasi state untuk menyimpan pesan sukses
     const [success, setSuccess] = useState("");
 
-    // Fungsi yang akan dijalankan saat form disubmit
+    // Fungsi yang dijalankan saat form disubmit
     const handleSubmit = async (e) => {
-        e.preventDefault(); // Mencegah reload halaman setelah form disubmit
-        setError(""); // Reset pesan error sebelum proses
-        setSuccess(""); // Reset pesan sukses sebelum proses
+        e.preventDefault(); // Mencegah halaman reload saat form disubmit
+        setError(""); // Menghapus pesan error sebelumnya
+        setSuccess(""); // Menghapus pesan sukses sebelumnya
 
-        // Validasi input: jika namaFakultas kosong, set pesan error
+        // Validasi form
         if (namaProdi.trim() === "") {
-            setError("Nama Prodi is required"); // Set pesan error jika input kosong
-            return; // Stop eksekusi fungsi jika input tidak valid
+            setError("Nama Prodi harus diisi");
+            return;
         }
-        if (kaprodi.trim() === "") {
-            setError("Nama kaprodi is required"); // Set pesan error jika input kosong
-            return; // Stop eksekusi fungsi jika input tidak valid
+        if (namaKaprodi.trim() === "") {
+            setError("Nama Kaprodi harus diisi");
+            return;
         }
         if (singkatan.trim() === "") {
-            setError("Nama singkatan is required"); // Set pesan error jika input kosong
-            return; // Stop eksekusi fungsi jika input tidak valid
+            setError("Singkatan harus diisi");
+            return;
         }
-        if (Fakultas.trim() === "") {
-            setError("Nama Fakultas is required"); // Set pesan error jika input kosong
-            return; // Stop eksekusi fungsi jika input tidak valid
+        if (namaFakultas.trim() === "") {
+            setError("Nama Fakultas harus diisi");
+            return;
         }
 
         try {
-            // Melakukan HTTP POST request untuk menyimpan data fakultas
+            // Melakukan POST request untuk membuat Prodi baru
             const response = await axios.post(
-                "https://academic-mi5a.vercel.app/api/api/fakultas", // Endpoint API yang dituju
+                "https://academic-mi5a.vercel.app/api/api/fakultas", // Endpoint API
                 {
-                    nama: namaProdi, // Data yang dikirim berupa objek JSON dengan properti 'nama'
-                    kaprodi: kaprodi, // Data yang dikirim berupa objek JSON dengan properti 'nama'
-                    singkatan: singkatan, // Data yang dikirim berupa objek JSON dengan properti 'nama'
-                    Fakultas: Fakultas, // Data yang dikirim berupa objek JSON dengan properti 'nama'
+                    nama: namaProdi,
+                    kaprodi: namaKaprodi,
+                    singkatan: singkatan,
+                    Fakultas: namaFakultas,
                 }
             );
 
-            // Jika response HTTP status 201 (Created), berarti berhasil
             if (response.status === 201) {
-                // Tampilkan pesan sukses jika fakultas berhasil dibuat
-                setSuccess("Prodi created successfully!");
-                setNamaProdi(""); // Kosongkan input form setelah sukses submit
+                // Jika berhasil membuat Prodi
+                setSuccess("Prodi berhasil dibuat!");
+                // Reset form setelah berhasil
+                setNamaProdi("");
+                setNamaKaprodi("");
+                setSingkatan("");
+                setNamaFakultas("");
             } else {
-                // Jika tidak berhasil, tampilkan pesan error
-                setError("Failed to create fakultas");
+                setError("Gagal membuat Prodi");
             }
         } catch (error) {
-            // Jika terjadi error (misal masalah jaringan), tampilkan pesan error
-            setError("An error occurred while creating fakultas");
+            // Menangani error jika request gagal
+            setError("Terjadi kesalahan saat membuat Prodi");
         }
     };
 
     return (
         <div className="container mt-5">
-            <h2 className="mb-4">Create Fakultas</h2>
-            {/* Jika ada pesan error, tampilkan dalam alert bootstrap */}
+            <h2 className="mb-4">Buat Prodi</h2>
+            {/* Menampilkan pesan error jika ada */}
             {error && <div className="alert alert-danger">{error}</div>}
-            {/* Jika ada pesan sukses, tampilkan dalam alert bootstrap */}
+            {/* Menampilkan pesan sukses jika ada */}
             {success && <div className="alert alert-success">{success}</div>}
-            {/* Form untuk mengisi nama fakultas */}
+
+            {/* Form untuk memasukkan detail Prodi */}
             <form onSubmit={handleSubmit}>
-                {/* Tangani event submit dengan handleSubmit */}
                 <div className="mb-3">
-                    <label className="form-label">
+                    <label className="form-label" htmlFor="namaProdi">
                         Nama Prodi
                     </label>
-                    {/* Input untuk nama fakultas dengan class bootstrap */}
                     <input
-                        type="text" className="form-control" id="namaProdi"
-                        value={namaProdi} // Nilai input disimpan di state namaFakultas
-                        onChange={(e) => setNamaProdi(e.target.value)} // Update state saat input berubah
-                        placeholder="Enter Prodi Name" // Placeholder teks untuk input
+                        type="text"
+                        className="form-control"
+                        id="namaProdi"
+                        value={namaProdi}
+                        onChange={(e) => setNamaProdi(e.target.value)}
+                        placeholder="Masukkan Nama Prodi"
                     />
                 </div>
+
                 <div className="mb-3">
-                    <label className="form-label">
-                        Kaprodi
+                    <label className="form-label" htmlFor="namaKaprodi">
+                        Nama Kaprodi
                     </label>
-                    {/* Input untuk nama fakultas dengan class bootstrap */}
                     <input
-                        type="text" className="form-control" id="kaprodi"
-                        value={kaprodi} // Nilai input disimpan di state namaFakultas
-                        onChange={(e) => setKaprodi(e.target.value)} // Update state saat input berubah
-                        placeholder="Enter kaprodi Name" // Placeholder teks untuk input
+                        type="text"
+                        className="form-control"
+                        id="namaKaprodi"
+                        value={namaKaprodi}
+                        onChange={(e) => setNamaKaprodi(e.target.value)}
+                        placeholder="Masukkan Nama Kaprodi"
                     />
                 </div>
+
                 <div className="mb-3">
-                    <label className="form-label">
-                        singkatan
+                    <label className="form-label" htmlFor="singkatan">
+                        Singkatan
                     </label>
-                    {/* Input untuk nama fakultas dengan class bootstrap */}
                     <input
-                        type="text" className="form-control" id="singkatan"
-                        value={singkatan} // Nilai input disimpan di state namaFakultas
-                        onChange={(e) => setSingkatan(e.target.value)} // Update state saat input berubah
-                        placeholder="Enter singkatan Name" // Placeholder teks untuk input
+                        type="text"
+                        className="form-control"
+                        id="singkatan"
+                        value={singkatan}
+                        onChange={(e) => setSingkatan(e.target.value)}
+                        placeholder="Masukkan Singkatan"
                     />
                 </div>
+
                 <div className="mb-3">
-                    <label className="form-label">
-                        Fakultas
+                    <label className="form-label" htmlFor="namaFakultas">
+                        Nama Fakultas
                     </label>
-                    {/* Input untuk nama fakultas dengan class bootstrap */}
                     <input
-                        type="text" className="form-control" id="Fakultas"
-                        value={Fakultas} // Nilai input disimpan di state namaFakultas
-                        onChange={(e) => setFakultas(e.target.value)} // Update state saat input berubah
-                        placeholder="Enter Fakultas Name" // Placeholder teks untuk input
+                        type="text"
+                        className="form-control"
+                        id="namaFakultas"
+                        value={namaFakultas}
+                        onChange={(e) => setNamaFakultas(e.target.value)}
+                        placeholder="Masukkan Nama Fakultas"
                     />
                 </div>
+
                 <button type="submit" className="btn btn-primary">
-                    Create
+                    Buat
                 </button>
             </form>
         </div>
